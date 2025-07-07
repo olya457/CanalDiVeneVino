@@ -71,7 +71,8 @@ const OnboardingScreen = () => {
           }),
         ]).start();
       } else {
-        navigation.navigate('Home');
+        // Заміна онбордингу на головний екран
+        navigation.replace('Home');
       }
     });
   };

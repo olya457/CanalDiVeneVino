@@ -16,7 +16,7 @@ const LoaderScreen = () => {
   useEffect(() => {
     const timers = [
       setTimeout(() => setStep('image'), 3000),
-      setTimeout(() => navigation.navigate('Onboarding'), 6000),
+      setTimeout(() => navigation.replace('Onboarding'), 6000),
     ];
     return () => timers.forEach(clearTimeout);
   }, []);
