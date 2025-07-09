@@ -11,7 +11,7 @@ export type FindVineBarStackParamList = {
 export type SurpriseStackParamList = {
   SurpriseMeMain: undefined;
   SurpriseWebView: undefined;
-  FinalResult: undefined;
+  FinalResult: { categoryId: string };
 };
 
 

@@ -8,12 +8,13 @@ import {
   ScrollView,
   Share,
   useWindowDimensions,
-  Animated, 
+  Animated,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native'; 
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import type { RootStackParamList } from '../navigation/types';
+import type { RouteProp } from '@react-navigation/native'; 
+import type { RootStackParamList, SurpriseStackParamList } from '../navigation/types'; 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const data: Record<string, Entry[]> = {
@@ -179,21 +180,24 @@ type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'VineBarMapS
 
 const FinalResultScreen = () => {
   const navigation = useNavigation<NavigationProp>();
+  const route = useRoute<RouteProp<SurpriseStackParamList, 'FinalResult'>>(); 
+  const { categoryId } = route.params; 
+
   const { width } = useWindowDimensions();
   const [entry, setEntry] = useState<Entry | null>(null);
   const [saved, setSaved] = useState(false);
 
-  
+
   const [fadeAnim] = useState(new Animated.Value(0));
-  const [translateYAnim] = useState(new Animated.Value(30)); 
-  const [scaleAnim] = useState(new Animated.Value(0.8)); 
+  const [translateYAnim] = useState(new Animated.Value(30));
+  const [scaleAnim] = useState(new Animated.Value(0.8));
 
   const containerWidth = Math.min(width * 0.9, 360);
 
-  const allEntries: Entry[] = Object.values(data).flat();
+  const allEntries: Entry[] = data[categoryId] || [];
 
   const getRandom = () => {
-   
+
     Animated.parallel([
       Animated.timing(fadeAnim, {
         toValue: 0,
@@ -205,13 +209,13 @@ const FinalResultScreen = () => {
         duration: 300,
         useNativeDriver: true,
       }),
-      Animated.timing(scaleAnim, { 
+      Animated.timing(scaleAnim, {
         toValue: 0.8,
         duration: 300,
         useNativeDriver: true,
       }),
     ]).start(() => {
-      
+
       const randomIndex = Math.floor(Math.random() * allEntries.length);
       const randomEntry = allEntries[randomIndex];
       setEntry(randomEntry);
@@ -228,7 +232,7 @@ const FinalResultScreen = () => {
           duration: 600,
           useNativeDriver: true,
         }),
-        Animated.timing(scaleAnim, { 
+        Animated.timing(scaleAnim, {
           toValue: 1,
           duration: 400,
           useNativeDriver: true,
@@ -238,8 +242,8 @@ const FinalResultScreen = () => {
   };
 
   useEffect(() => {
-    getRandom(); 
-  }, []);
+    getRandom();
+  }, [categoryId]); 
 
   useEffect(() => {
     if (entry) {
@@ -291,18 +295,18 @@ const FinalResultScreen = () => {
   };
 
   const handleRoute = () => {
-  if (entry) {
-    navigation.navigate('Main', {
-      screen: 'VineBarMap',
-      params: {
-        coordinates: entry.coordinates,
-        title: entry.title,
-        selectedId: entry.title, 
-        autoFocus: true,         
-      },
-    });
-  }
-};
+    if (entry) {
+      navigation.navigate('Main', {
+        screen: 'VineBarMap',
+        params: {
+          coordinates: entry.coordinates,
+          title: entry.title,
+          selectedId: entry.title,
+          autoFocus: true,
+        },
+      });
+    }
+  };
 
 
   const getImage = (name: string) => {
@@ -327,8 +331,7 @@ const FinalResultScreen = () => {
         'image_hidden2.png': require('../assets/image_hidden2.png'),
         'image_hidden3.png': require('../assets/image_hidden3.png'),
         'image_hidden4.png': require('../assets/image_hidden4.png'),
-        'image_hidden5.png': require('../assets/image_hidden5.png',
-        ),
+        'image_hidden5.png': require('../assets/image_hidden5.png'), 
       };
       return imageMap[name] || require('../assets/default.png');
     } catch (error) {
@@ -406,11 +409,7 @@ const FinalResultScreen = () => {
       </Animated.View>
 
       {}
-      <TouchableOpacity onPress={getRandom} style={[styles.newButton, { width: containerWidth }]}>
-        <LinearGradient colors={['#FFDB98', '#654200']} style={styles.newButtonGradient}>
-          <Text style={styles.newButtonText}>Search new</Text>
-        </LinearGradient>
-      </TouchableOpacity>
+
     </ScrollView>
   );
 };
