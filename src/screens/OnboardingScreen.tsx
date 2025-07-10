@@ -56,7 +56,7 @@ const OnboardingScreen = () => {
       }),
     ]).start(() => {
       if (index < onboardingData.length - 1) {
-       // setIndex(index + 1);
+        setIndex(index + 1);
         translateXAnim.setValue(width); 
         Animated.parallel([
           Animated.timing(fadeAnim, {
